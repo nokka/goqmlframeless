@@ -10,7 +10,6 @@ import (
 
 // SVGButton toolbar for everything but darwin.
 type SVGButton struct {
-	f       *QFramelessWindow
 	Widget  *widgets.QWidget
 	IconBtn *svg.QSvgWidget
 	isHover bool
@@ -68,7 +67,7 @@ func NewSVGButton(parent widgets.QWidget_ITF) *SVGButton {
 
 	// Add icon to the layout.
 	layout.AddWidget(icon, 0, 0)
-	layout.SetAlignment(icon, core.Qt__AlignCenter)
+	layout.SetAlignment(icon, core.Qt__AlignRight)
 
 	return &SVGButton{
 		Widget:  widget,

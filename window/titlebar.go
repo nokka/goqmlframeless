@@ -15,7 +15,6 @@ func addTitleBarButtons(f *QFramelessWindow) {
 	f.titleBarLayout.SetSpacing(1)
 
 	f.iconMinimize = NewSVGButton(nil)
-	f.iconMinimize.f = f
 
 	// TODO: REMOVE?
 	f.iconMinimize.IconBtn.SetFixedSize2(iconSize, iconSize)
@@ -24,7 +23,6 @@ func addTitleBarButtons(f *QFramelessWindow) {
 	f.iconMinimize.Hide()
 
 	f.iconClose = NewSVGButton(nil)
-	f.iconClose.f = f
 	f.iconClose.IconBtn.SetFixedSize2(iconSize, iconSize)
 	f.iconClose.SetObjectName("IconClose")
 	f.iconClose.SetStyle(nil)
@@ -40,12 +38,7 @@ func addTitleBarButtons(f *QFramelessWindow) {
 
 // styleTitlebarButtons ...
 func styleTitlebarButtons(f *QFramelessWindow) {
-	color := &RGB{
-		R: 128,
-		G: 128,
-		B: 128,
-	}
-
+	color := &RGB{R: 255, G: 255, B: 255}
 	var SvgMinimize, SvgClose string
 
 	if runtime.GOOS == "windows" {
