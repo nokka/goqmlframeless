@@ -1,5 +1,5 @@
 // +build !darwin
 
-package window
+package goqmlframeless
 
 func AllowMinimize(uintptr) {}

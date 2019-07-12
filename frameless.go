@@ -1,4 +1,4 @@
-package window
+package goqmlframeless
 
 import (
 	"github.com/therecipe/qt/core"
@@ -40,15 +40,26 @@ type QFramelessWindow struct {
 	isTitleBarPressed bool
 }
 
-// NewFramelessWindow ...
-func NewFramelessWindow(width int, height int) *QFramelessWindow {
-	f := NewQFramelessWindow(nil, 0)
-	f.SetFixedSize2(width, height)
+// Options are the options available to customize the frame with.
+type Options struct {
+	Width      int
+	Height     int
+	Alpha      float64
+	Color      RGB
+	BorderSize int
+	ShadowSize int
+}
 
-	f.frameColor = &RGB{R: 8, B: 8, G: 5}
-	f.shadowMargin = 0
-	f.borderSize = 1
-	f.colorAlpha = 1
+// NewWindow creates a new frameless window.
+func NewWindow(options Options) *QFramelessWindow {
+	f := NewQFramelessWindow(nil, 0)
+	f.SetFixedSize2(options.Width, options.Height)
+
+	// Set attributes.
+	f.frameColor = &options.Color
+	f.colorAlpha = options.Alpha
+	f.shadowMargin = options.ShadowSize
+	f.borderSize = options.BorderSize
 
 	// Central widget and layout.
 	f.Widget = newWidget()
@@ -72,7 +83,7 @@ func NewFramelessWindow(width int, height int) *QFramelessWindow {
 	styleTitlebarButtons(f)
 
 	// Setup event handling for title bar.
-	setupTitleBarActions(f)
+	setupTitleBarEvents(f)
 
 	return f
 }
@@ -90,7 +101,7 @@ func newLayout() *widgets.QVBoxLayout {
 	return layout
 }
 
-// SetupUI ...
+// createFrame will create the frame we'll draw on.
 func (f *QFramelessWindow) createFrame() {
 	f.InstallEventFilter(f)
 
@@ -101,7 +112,6 @@ func (f *QFramelessWindow) createFrame() {
 
 	// Setup frame layout which is add to the frame.
 	f.frameLayout = widgets.NewQVBoxLayout2(f.frame)
-	f.frameLayout.SetContentsMargins(f.borderSize, f.borderSize, f.borderSize, 0)
 	f.frameLayout.SetContentsMargins(0, 0, 0, 0)
 	f.frameLayout.SetSpacing(0)
 	f.frame.SetLayout(f.frameLayout)
@@ -122,7 +132,7 @@ func (f *QFramelessWindow) createFrame() {
 	f.Layout.AddWidget(f.frame, 0, 0)
 }
 
-// SetupWindowFlags ...
+// SetupWindowFlags will setup the window flags for the window.
 func (f *QFramelessWindow) setupWindowFlags() {
 	f.SetWindowFlag(core.Qt__Window, true)
 	f.SetWindowFlag(core.Qt__FramelessWindowHint, true)
@@ -130,7 +140,7 @@ func (f *QFramelessWindow) setupWindowFlags() {
 	f.SetWindowFlag(core.Qt__MSWindowsFixedSizeDialogHint, true)
 }
 
-// SetupAttributes ...
+// SetupAttributes will set all attributes for teh window.
 func (f *QFramelessWindow) setupAttributes() {
 	f.SetAttribute(core.Qt__WA_TranslucentBackground, true)
 	f.SetAttribute(core.Qt__WA_NoSystemBackground, true)

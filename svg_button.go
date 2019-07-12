@@ -1,4 +1,4 @@
-package window
+package goqmlframeless
 
 import (
 	"fmt"
@@ -15,24 +15,25 @@ type SVGButton struct {
 	isHover bool
 }
 
-// SetObjectName ...
+// SetObjectName will set the object name.
 func (b *SVGButton) SetObjectName(name string) {
 	b.IconBtn.SetObjectName(name)
 }
 
-// Hide ...
+// Hide will hide the button.
 func (b *SVGButton) Hide() {
 	b.Widget.Hide()
 }
 
-// Show ...
+// Show will show the button.
 func (b *SVGButton) Show() {
 	b.Widget.Show()
 }
 
-// SetStyle ...
+// SetStyle will set the style for the button.
 func (b *SVGButton) SetStyle(color *RGB) {
 	backgroundColor := "background-color:none;"
+
 	// Override background color if it's set.
 	if color != nil {
 		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", color.R, color.G, color.B, 1.0)
@@ -46,7 +47,7 @@ func (b *SVGButton) SetStyle(color *RGB) {
 	`, backgroundColor))
 }
 
-// NewSVGButton ...
+// NewSVGButton creates a new SVG button.
 func NewSVGButton(parent widgets.QWidget_ITF) *SVGButton {
 	iconSize := 15
 	marginTB := iconSize / 6

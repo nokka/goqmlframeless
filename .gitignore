@@ -15,10 +15,3 @@ darwin/
 #file prefixes
 moc*.*
 rcc*.*
-
-# binaries
-slash-launcher
-
-# Diablo II files
-BnetLog.txt
-D2HD.ini

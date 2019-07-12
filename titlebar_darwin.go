@@ -1,6 +1,6 @@
 // +build darwin
 
-package window
+package goqmlframeless
 
 import (
 	"github.com/therecipe/qt/core"
@@ -8,7 +8,7 @@ import (
 	"github.com/therecipe/qt/widgets"
 )
 
-// addTitleBarButtons
+// addTitleBarButtons will create all the buttons on the title bar.
 func addTitleBarButtons(f *QFramelessWindow) {
 	// Sizing policy.
 	btnSizePolicy := widgets.NewQSizePolicy2(widgets.QSizePolicy__Fixed, widgets.QSizePolicy__Fixed, widgets.QSizePolicy__ToolButton)
@@ -30,9 +30,10 @@ func addTitleBarButtons(f *QFramelessWindow) {
 	// Add buttons to the layout.
 	f.titleBarLayout.AddWidget(f.btnClose, 0, 0)
 	f.titleBarLayout.AddWidget(f.btnMinimize, 0, 0)
+	f.titleBarLayout.AddStretch(0)
 }
 
-// colorizeTitlebarButtons ...
+// styleTitlebarButtons will style the OS specific buttons.
 func styleTitlebarButtons(f *QFramelessWindow) {
 	var baseStyle, minimizeColor, closeColor string
 	baseStyle = ` #BtnMinimize, #BtnClose {
@@ -79,8 +80,8 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 	f.btnClose.SetStyleSheet(baseStyle + closeColor + closeColorHover)
 }
 
-// setupTitleBarActions ...
-func setupTitleBarActions(f *QFramelessWindow) {
+// setupTitleBarEvents will setup all the events for the title bar.
+func setupTitleBarEvents(f *QFramelessWindow) {
 	// Setup title bar actions.
 	f.titleBar.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
 		f.Widget.Raise()

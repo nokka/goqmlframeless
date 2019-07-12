@@ -1,6 +1,6 @@
 // +build darwin
 
-package window
+package goqmlframeless
 
 //void allowMinimize(void*);
 import "C"

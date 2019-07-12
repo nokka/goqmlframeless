@@ -1,6 +1,6 @@
 // +build !darwin
 
-package window
+package goqmlframeless
 
 import (
 	"fmt"
@@ -14,6 +14,7 @@ const (
 	iconSize = 15
 )
 
+// addTitleBarButtons will create all the buttons on the title bar.
 func addTitleBarButtons(f *QFramelessWindow) {
 	f.titleBarLayout.SetSpacing(2)
 
@@ -37,7 +38,7 @@ func addTitleBarButtons(f *QFramelessWindow) {
 	f.titleBarLayout.AddWidget(f.iconClose.Widget, 0, 0)
 }
 
-// styleTitlebarButtons ...
+// styleTitlebarButtons will style the OS specific buttons.
 func styleTitlebarButtons(f *QFramelessWindow) {
 	color := &RGB{R: 255, G: 255, B: 255}
 	var SvgMinimize, SvgClose string
@@ -75,8 +76,8 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 	f.iconClose.Show()
 }
 
-// setupTitleBarActions ...
-func setupTitleBarActions(f *QFramelessWindow) {
+// setupTitleBarEvents will setup all the events for the title bar.
+func setupTitleBarEvents(f *QFramelessWindow) {
 	// Setup minimize button actions.
 	f.iconMinimize.Widget.ConnectEnterEvent(func(event *core.QEvent) {
 		// Set style when hovering the icon.
