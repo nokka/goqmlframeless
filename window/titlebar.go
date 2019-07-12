@@ -10,13 +10,14 @@ import (
 	"github.com/therecipe/qt/gui"
 )
 
+const (
+	iconSize = 15
+)
+
 func addTitleBarButtons(f *QFramelessWindow) {
-	iconSize := 15
-	f.titleBarLayout.SetSpacing(1)
+	f.titleBarLayout.SetSpacing(2)
 
 	f.iconMinimize = NewSVGButton(nil)
-
-	// TODO: REMOVE?
 	f.iconMinimize.IconBtn.SetFixedSize2(iconSize, iconSize)
 	f.iconMinimize.SetObjectName("IconMinimize")
 	f.iconMinimize.SetStyle(nil)
@@ -28,10 +29,10 @@ func addTitleBarButtons(f *QFramelessWindow) {
 	f.iconClose.SetStyle(nil)
 	f.iconClose.Hide()
 
-	f.titleBarLayout.SetAlignment(f.TitleBarBtnWidget, core.Qt__AlignRight)
+	f.titleBarLayout.SetAlignment(nil, core.Qt__AlignRight)
 
-	// TODO: REMOVE TITLE LABEL?
-	f.titleBarLayout.AddWidget(f.titleLabel, 0, 0)
+	// Add stretch to push buttons to the right side.
+	f.titleBarLayout.AddStretch(0)
 	f.titleBarLayout.AddWidget(f.iconMinimize.Widget, 0, 0)
 	f.titleBarLayout.AddWidget(f.iconClose.Widget, 0, 0)
 }
@@ -78,6 +79,7 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 func setupTitleBarActions(f *QFramelessWindow) {
 	// Setup minimize button actions.
 	f.iconMinimize.Widget.ConnectEnterEvent(func(event *core.QEvent) {
+		// Set style when hovering the icon.
 		f.iconMinimize.SetStyle(&RGB{
 			R: 0,
 			G: 162,
@@ -86,6 +88,7 @@ func setupTitleBarActions(f *QFramelessWindow) {
 	})
 
 	f.iconMinimize.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		// Reset style when leaving the icon.
 		f.iconMinimize.SetStyle(nil)
 	})
 
@@ -105,6 +108,7 @@ func setupTitleBarActions(f *QFramelessWindow) {
 
 	// Setup close button actions.
 	f.iconClose.Widget.ConnectEnterEvent(func(event *core.QEvent) {
+		// Set style when hovering the icon.
 		f.iconClose.SetStyle(&RGB{
 			R: 0,
 			G: 162,
@@ -113,6 +117,7 @@ func setupTitleBarActions(f *QFramelessWindow) {
 	})
 
 	f.iconClose.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		// Reset style when leaving the icon.
 		f.iconClose.SetStyle(nil)
 	})
 

@@ -35,8 +35,7 @@ func (b *SVGButton) SetStyle(color *RGB) {
 	backgroundColor := "background-color:none;"
 	// Override background color if it's set.
 	if color != nil {
-		hoverColor := RGB{R: 0, B: 0, G: 0}
-		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", hoverColor.R, hoverColor.G, hoverColor.B, 1)
+		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", color.R, color.G, color.B, 1.0)
 	}
 
 	b.Widget.SetStyleSheet(fmt.Sprintf(`

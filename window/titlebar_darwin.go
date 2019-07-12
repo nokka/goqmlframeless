@@ -25,12 +25,11 @@ func addTitleBarButtons(f *QFramelessWindow) {
 
 	// Title bar layout.
 	f.titleBarLayout.SetSpacing(0)
-	f.titleBarLayout.SetAlignment(f.TitleBarBtnWidget, core.Qt__AlignLeft)
+	f.titleBarLayout.SetAlignment(nil, core.Qt__AlignLeft)
 
 	// Add buttons to the layout.
 	f.titleBarLayout.AddWidget(f.btnClose, 0, 0)
 	f.titleBarLayout.AddWidget(f.btnMinimize, 0, 0)
-	f.titleBarLayout.AddWidget(f.titleLabel, 0, 0)
 }
 
 // colorizeTitlebarButtons ...

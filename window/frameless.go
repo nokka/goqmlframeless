@@ -26,10 +26,6 @@ type QFramelessWindow struct {
 	titleBar       *widgets.QWidget
 	titleBarLayout *widgets.QHBoxLayout
 
-	// QUESTIONABLE
-	TitleBarBtnWidget *widgets.QWidget
-	titleLabel        *widgets.QLabel
-
 	// Darwin title bar buttons.
 	btnMinimize *widgets.QToolButton
 	btnClose    *widgets.QToolButton
@@ -98,31 +94,26 @@ func newLayout() *widgets.QVBoxLayout {
 func (f *QFramelessWindow) createFrame() {
 	f.InstallEventFilter(f)
 
-	// FRAME (f.WindowWidget)
+	// Setup the frame, this is the base we'll add everything too.
 	f.frame = widgets.NewQFrame(f.Widget, 0)
 	f.frame.SetObjectName("QFramelessWidget")
 	f.frame.SetSizePolicy2(widgets.QSizePolicy__Expanding|widgets.QSizePolicy__Maximum, widgets.QSizePolicy__Expanding|widgets.QSizePolicy__Maximum)
 
-	// FRAME LAYOUT (f.WindowVLayout)
+	// Setup frame layout which is add to the frame.
 	f.frameLayout = widgets.NewQVBoxLayout2(f.frame)
 	f.frameLayout.SetContentsMargins(f.borderSize, f.borderSize, f.borderSize, 0)
 	f.frameLayout.SetContentsMargins(0, 0, 0, 0)
 	f.frameLayout.SetSpacing(0)
 	f.frame.SetLayout(f.frameLayout)
 
-	// TITLE BAR
+	// Title bar is used for dragging the window around and also has icons.
 	f.titleBar = widgets.NewQWidget(f.frame, 0)
 	f.titleBar.SetObjectName("TitleBar")
 	f.titleBar.SetSizePolicy2(widgets.QSizePolicy__Expanding, widgets.QSizePolicy__Fixed)
 
-	// TITLE BAR LAYOUT
+	// // Title bar layout is added to the title bar, to add widgets on.
 	f.titleBarLayout = widgets.NewQHBoxLayout2(f.titleBar)
 	f.titleBarLayout.SetContentsMargins(0, 0, 0, 0)
-
-	// TITLE LABEL
-	f.titleLabel = widgets.NewQLabel(nil, 0)
-	f.titleLabel.SetObjectName("TitleLabel")
-	f.titleLabel.SetAlignment(core.Qt__AlignCenter)
 
 	// Add the title bar to the frame.
 	f.frameLayout.AddWidget(f.titleBar, 0, 0)
