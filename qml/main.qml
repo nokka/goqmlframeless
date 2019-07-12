@@ -6,7 +6,7 @@ Rectangle {
     width: 1024; height: 600
 
     OverrideButton{
-        cursorShape: Qt.OpenHandCursor
+        cursorShape: Qt.PointingHandCursor
     }
 
     MouseArea {
@@ -14,7 +14,7 @@ Rectangle {
         height: 150
         hoverEnabled: true
         x: 50; y: 50
-        cursorShape: Qt.OpenHandCursor
+        cursorShape: Qt.PointingHandCursor
         Rectangle { anchors.fill: parent; color: "red"; }
         onPositionChanged: console.log("position", mouse.x, mouse.y)
         onContainsMouseChanged: console.log("containsMouse", containsMouse)

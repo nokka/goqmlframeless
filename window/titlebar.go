@@ -1,3 +1,5 @@
+// +build !darwin
+
 package window
 
 import (
@@ -5,62 +7,45 @@ import (
 	"runtime"
 
 	"github.com/therecipe/qt/core"
-	"github.com/therecipe/qt/svg"
-	"github.com/therecipe/qt/widgets"
+	"github.com/therecipe/qt/gui"
 )
 
-// QToolButtonForNotDarwin toolbar for everything but darwin.
-type QToolButtonForNotDarwin struct {
-	f       *QFramelessWindow
-	Widget  *widgets.QWidget
-	IconBtn *svg.QSvgWidget
-	isHover bool
+func addTitleBarButtons(f *QFramelessWindow) {
+	iconSize := 15
+	f.titleBarLayout.SetSpacing(1)
+
+	f.iconMinimize = NewSVGButton(nil)
+	f.iconMinimize.f = f
+
+	// TODO: REMOVE?
+	f.iconMinimize.IconBtn.SetFixedSize2(iconSize, iconSize)
+	f.iconMinimize.SetObjectName("IconMinimize")
+	f.iconMinimize.SetStyle(nil)
+	f.iconMinimize.Hide()
+
+	f.iconClose = NewSVGButton(nil)
+	f.iconClose.f = f
+	f.iconClose.IconBtn.SetFixedSize2(iconSize, iconSize)
+	f.iconClose.SetObjectName("IconClose")
+	f.iconClose.SetStyle(nil)
+	f.iconClose.Hide()
+
+	f.titleBarLayout.SetAlignment(f.TitleBarBtnWidget, core.Qt__AlignRight)
+
+	// TODO: REMOVE TITLE LABEL?
+	f.titleBarLayout.AddWidget(f.titleLabel, 0, 0)
+	f.titleBarLayout.AddWidget(f.iconMinimize.Widget, 0, 0)
+	f.titleBarLayout.AddWidget(f.iconClose.Widget, 0, 0)
 }
 
-// SetObjectName ...
-func (b *QToolButtonForNotDarwin) SetObjectName(name string) {
-	b.IconBtn.SetObjectName(name)
-}
-
-// Hide ...
-func (b *QToolButtonForNotDarwin) Hide() {
-	b.Widget.Hide()
-}
-
-// Show ...
-func (b *QToolButtonForNotDarwin) Show() {
-	b.Widget.Show()
-}
-
-// SetStyle ...
-func (b *QToolButtonForNotDarwin) SetStyle(color *RGB) {
-	var backgroundColor string
-	if color == nil {
-		backgroundColor = "background-color:none;"
-	} else {
-		hoverColor := color.Brend(b.f.frameColor, 0.75)
-		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", hoverColor.R, hoverColor.G, hoverColor.B, b.f.colorAlpha)
+// styleTitlebarButtons ...
+func styleTitlebarButtons(f *QFramelessWindow) {
+	color := &RGB{
+		R: 128,
+		G: 128,
+		B: 128,
 	}
 
-	b.Widget.SetStyleSheet(fmt.Sprintf(`
-	.QWidget { 
-		%s;
-		border:none;
-	}
-	`, backgroundColor))
-}
-
-// SetupTitleBarColorForNotDarwin ...
-func (f *QFramelessWindow) SetupTitleBarColorForNotDarwin(color *RGB) {
-	if color == nil {
-		color = &RGB{
-			R: 128,
-			G: 128,
-			B: 128,
-		}
-	} else {
-		color = color.fade()
-	}
 	var SvgMinimize, SvgClose string
 
 	if runtime.GOOS == "windows" {
@@ -89,9 +74,6 @@ func (f *QFramelessWindow) SetupTitleBarColorForNotDarwin(color *RGB) {
 		`, "#e86032")
 	}
 
-	fmt.Println("ICON MINIMIZE BUTTON")
-	fmt.Println(f.iconMinimize)
-
 	f.iconMinimize.IconBtn.Load2(core.NewQByteArray2(SvgMinimize, len(SvgMinimize)))
 	f.iconClose.IconBtn.Load2(core.NewQByteArray2(SvgClose, len(SvgClose)))
 
@@ -99,68 +81,79 @@ func (f *QFramelessWindow) SetupTitleBarColorForNotDarwin(color *RGB) {
 	f.iconClose.Show()
 }
 
-// TITLE BAR BUTTONS
+// setupTitleBarActions ...
+func setupTitleBarActions(f *QFramelessWindow) {
+	// Setup minimize button actions.
+	f.iconMinimize.Widget.ConnectEnterEvent(func(event *core.QEvent) {
+		f.iconMinimize.SetStyle(&RGB{
+			R: 0,
+			G: 162,
+			B: 232,
+		})
+	})
 
-// SetTitleBarButtons ...
-func (f *QFramelessWindow) SetTitleBarButtons() {
-	iconSize := 15
-	f.titleBarLayout.SetSpacing(1)
+	f.iconMinimize.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		f.iconMinimize.SetStyle(nil)
+	})
 
-	f.iconMinimize = NewQToolButtonForNotDarwin(nil)
-	f.iconMinimize.f = f
-	f.iconMinimize.IconBtn.SetFixedSize2(iconSize, iconSize)
-	f.iconMinimize.SetObjectName("IconMinimize")
+	f.iconMinimize.Widget.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
 
-	f.iconClose = NewQToolButtonForNotDarwin(nil)
-	f.iconClose.f = f
-	f.iconClose.IconBtn.SetFixedSize2(iconSize, iconSize)
-	f.iconClose.SetObjectName("IconClose")
+	f.iconMinimize.Widget.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		isContain := f.iconMinimize.Widget.Rect().Contains(e.Pos(), false)
+		if !isContain {
+			return
+		}
+		f.SetWindowState(core.Qt__WindowMinimized)
+		f.Widget.Hide()
+		f.Widget.Show()
+	})
 
-	f.SetIconsStyle(nil)
+	// Setup close button actions.
+	f.iconClose.Widget.ConnectEnterEvent(func(event *core.QEvent) {
+		f.iconClose.SetStyle(&RGB{
+			R: 0,
+			G: 162,
+			B: 232,
+		})
+	})
 
-	f.iconMinimize.Hide()
-	f.iconClose.Hide()
+	f.iconClose.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		f.iconClose.SetStyle(nil)
+	})
 
-	f.titleBarLayout.SetAlignment(f.TitleBarBtnWidget, core.Qt__AlignRight)
-	f.titleBarLayout.AddWidget(f.titleLabel, 0, 0)
-	f.titleBarLayout.AddWidget(f.iconMinimize.Widget, 0, 0)
-	f.titleBarLayout.AddWidget(f.iconClose.Widget, 0, 0)
-}
+	f.iconClose.Widget.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
 
-// NewQToolButtonForNotDarwin ...
-func NewQToolButtonForNotDarwin(parent widgets.QWidget_ITF) *QToolButtonForNotDarwin {
-	iconSize := 15
-	marginTB := iconSize / 6
-	marginLR := 1
-	if runtime.GOOS == "linux" {
-		iconSize = 18
-		marginLR = int(float64(iconSize) / float64(3.5))
-	} else {
-		marginLR = int(float64(iconSize) / float64(2.5))
-	}
+	f.iconClose.Widget.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		isContain := f.iconClose.Widget.Rect().Contains(e.Pos(), false)
+		if !isContain {
+			return
+		}
+		f.Close()
+	})
 
-	widget := widgets.NewQWidget(parent, 0)
-	widget.SetSizePolicy2(widgets.QSizePolicy__Fixed, widgets.QSizePolicy__Fixed)
-	layout := widgets.NewQVBoxLayout2(widget)
-	layout.SetContentsMargins(marginLR, marginTB, marginLR, marginTB)
-	icon := svg.NewQSvgWidget(nil)
-	icon.SetFixedSize2(iconSize, iconSize)
+	// Setup movable window.
+	f.titleBar.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.Widget.Raise()
+		f.isTitleBarPressed = true
+		f.titleBarMousePos = e.GlobalPos()
+		f.position = f.Pos()
+	})
 
-	layout.AddWidget(icon, 0, 0)
-	layout.SetAlignment(icon, core.Qt__AlignCenter)
+	f.titleBar.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
 
-	return &QToolButtonForNotDarwin{
-		Widget:  widget,
-		IconBtn: icon,
-	}
-}
-
-// SetIconsStyle ...
-func (f *QFramelessWindow) SetIconsStyle(color *RGB) {
-	for _, b := range []*QToolButtonForNotDarwin{
-		f.iconMinimize,
-		f.iconClose,
-	} {
-		b.SetStyle(color)
-	}
+	f.titleBar.ConnectMouseMoveEvent(func(e *gui.QMouseEvent) {
+		if !f.isTitleBarPressed {
+			return
+		}
+		x := f.position.X() + e.GlobalPos().X() - f.titleBarMousePos.X()
+		y := f.position.Y() + e.GlobalPos().Y() - f.titleBarMousePos.Y()
+		newPos := core.NewQPoint2(x, y)
+		f.Move(newPos)
+	})
 }

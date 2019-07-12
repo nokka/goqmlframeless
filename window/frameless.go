@@ -12,7 +12,7 @@ type QFramelessWindow struct {
 	Widget *widgets.QWidget
 	Layout *widgets.QVBoxLayout
 
-	// Attributes
+	// Attributes.
 	shadowMargin int
 	borderSize   int
 	colorAlpha   float64
@@ -30,16 +30,13 @@ type QFramelessWindow struct {
 	TitleBarBtnWidget *widgets.QWidget
 	titleLabel        *widgets.QLabel
 
-	// ICONS, REFACTOR?
-
 	// Darwin title bar buttons.
 	btnMinimize *widgets.QToolButton
 	btnClose    *widgets.QToolButton
 
 	// Windows and Linux title bar buttons.
-	iconMinimize *QToolButtonForNotDarwin
-	iconRestore  *QToolButtonForNotDarwin
-	iconClose    *QToolButtonForNotDarwin
+	iconMinimize *SVGButton
+	iconClose    *SVGButton
 
 	// Mouse events.
 	titleBarMousePos  *core.QPoint
@@ -59,7 +56,6 @@ func NewFramelessWindow(width int, height int) *QFramelessWindow {
 	f := NewQFramelessWindow(nil, 0)
 	f.SetFixedSize2(width, height)
 
-	// TODO: Parameterize
 	f.frameColor = &RGB{R: 8, B: 8, G: 5}
 	f.shadowMargin = 0
 	f.borderSize = 1
@@ -83,8 +79,11 @@ func NewFramelessWindow(width int, height int) *QFramelessWindow {
 	f.setupAttributes()
 
 	// Setup OS specific title bar.
-	setupTitleBarActions(f)
+	addTitleBarButtons(f)
 	styleTitlebarButtons(f)
+
+	// Setup event handling for title bar.
+	setupTitleBarActions(f)
 
 	return f
 }
@@ -131,9 +130,6 @@ func (f *QFramelessWindow) createFrame() {
 	f.titleLabel = widgets.NewQLabel(nil, 0)
 	f.titleLabel.SetObjectName("TitleLabel")
 	f.titleLabel.SetAlignment(core.Qt__AlignCenter)
-
-	// BUTTONS
-	addTitleBarButtons(f)
 
 	// Add the title bar to the frame.
 	f.frameLayout.AddWidget(f.titleBar, 0, 0)
