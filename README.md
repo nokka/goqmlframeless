@@ -1,5 +1,7 @@
 
 # goqmlframeless
+[![Go Report Card](https://goreportcard.com/badge/github.com/nokka/goqmlframeless)](https://goreportcard.com/report/github.com/nokka/goqmlframeless)
+[![GoDoc](https://godoc.org/github.com/nokka/goqmlframeless?status.svg)](https://godoc.org/github.com/nokka/goqmlframeless)
 
 This package contains a minimalistic QT frameless window using QML for drawing the application. The window disables Windows features such as aerosnap.
 
