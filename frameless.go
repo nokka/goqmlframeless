@@ -140,7 +140,7 @@ func (f *QFramelessWindow) setupWindowFlags() {
 	f.SetWindowFlag(core.Qt__MSWindowsFixedSizeDialogHint, true)
 }
 
-// SetupAttributes will set all attributes for teh window.
+// SetupAttributes will set all attributes for the window.
 func (f *QFramelessWindow) setupAttributes() {
 	f.SetAttribute(core.Qt__WA_TranslucentBackground, true)
 	f.SetAttribute(core.Qt__WA_NoSystemBackground, true)
