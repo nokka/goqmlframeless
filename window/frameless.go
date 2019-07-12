@@ -40,6 +40,18 @@ type QFramelessWindow struct {
 	iconMinimize *QToolButtonForNotDarwin
 	iconRestore  *QToolButtonForNotDarwin
 	iconClose    *QToolButtonForNotDarwin
+
+	// Mouse events.
+	titleBarMousePos  *core.QPoint
+	isTitleBarPressed bool
+	position          *core.QPoint
+
+	isCursorChanged     bool
+	isDragStart         bool
+	isLeftButtonPressed bool
+	dragPos             *core.QPoint
+
+	MousePos [2]int
 }
 
 // NewFramelessWindow ...
@@ -48,33 +60,31 @@ func NewFramelessWindow(width int, height int) *QFramelessWindow {
 	f.SetFixedSize2(width, height)
 
 	// TODO: Parameterize
-	f.frameColor = &RGB{R: 0, B: 0, G: 0}
-	f.shadowMargin = 1
+	f.frameColor = &RGB{R: 8, B: 8, G: 5}
+	f.shadowMargin = 0
 	f.borderSize = 1
 	f.colorAlpha = 1
 
 	// Central widget and layout.
 	f.Widget = newWidget()
-
-	// TODO: Implement real margin.
-	f.Layout = newLayout(1)
+	f.Layout = newLayout()
 
 	// Set layout and central widget.
 	f.Widget.SetLayout(f.Layout)
 	f.SetCentralWidget(f.Widget)
 
-	// Configuration.
+	// Create the frame for the window.
 	f.createFrame()
+	f.setupFrameColor()
+	f.setupFrameShadow()
+
+	// Setup window flags and attributes.
 	f.setupWindowFlags()
-	f.SetupAttributes()
+	f.setupAttributes()
 
-	// MISSING:
-	// - Title bar actions
-
-	f.SetupFrameEvents()
-
-	f.SetupFrameColor()
-	f.SetupFrameShadow()
+	// Setup OS specific title bar.
+	setupTitleBarActions(f)
+	styleTitlebarButtons(f)
 
 	return f
 }
@@ -85,9 +95,9 @@ func newWidget() *widgets.QWidget {
 	return widget
 }
 
-func newLayout(margin int) *widgets.QVBoxLayout {
+func newLayout() *widgets.QVBoxLayout {
 	layout := widgets.NewQVBoxLayout()
-	layout.SetContentsMargins(margin, margin, margin, margin)
+	layout.SetContentsMargins(0, 0, 0, 0)
 	layout.SetSpacing(0)
 	return layout
 }
@@ -141,7 +151,7 @@ func (f *QFramelessWindow) setupWindowFlags() {
 }
 
 // SetupAttributes ...
-func (f *QFramelessWindow) SetupAttributes() {
+func (f *QFramelessWindow) setupAttributes() {
 	f.SetAttribute(core.Qt__WA_TranslucentBackground, true)
 	f.SetAttribute(core.Qt__WA_NoSystemBackground, true)
 	f.SetAttribute(core.Qt__WA_Hover, true)

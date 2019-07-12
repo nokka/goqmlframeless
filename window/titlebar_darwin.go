@@ -4,6 +4,7 @@ package window
 
 import (
 	"github.com/therecipe/qt/core"
+	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
 )
 
@@ -77,4 +78,50 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 
 	f.btnMinimize.SetStyleSheet(baseStyle + minimizeColor + minimizeColorHover)
 	f.btnClose.SetStyleSheet(baseStyle + closeColor + closeColorHover)
+}
+
+// setupTitleBarActions ...
+func setupTitleBarActions(f *QFramelessWindow) {
+	// Setup title bar actions.
+	f.titleBar.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.Widget.Raise()
+		f.isTitleBarPressed = true
+		f.titleBarMousePos = e.GlobalPos()
+		f.position = f.Pos()
+	})
+
+	f.titleBar.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
+
+	// Setup movable window.
+	f.titleBar.ConnectMouseMoveEvent(func(e *gui.QMouseEvent) {
+		if !f.isTitleBarPressed {
+			return
+		}
+		x := f.position.X() + e.GlobalPos().X() - f.titleBarMousePos.X()
+		y := f.position.Y() + e.GlobalPos().Y() - f.titleBarMousePos.Y()
+		newPos := core.NewQPoint2(x, y)
+		f.Move(newPos)
+	})
+
+	// Minimize button events.
+	f.btnMinimize.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
+
+	f.btnMinimize.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		f.SetWindowState(core.Qt__WindowMinimized)
+		f.Widget.Hide()
+		f.Widget.Show()
+	})
+
+	// Close button events.
+	f.btnClose.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
+		f.isTitleBarPressed = false
+	})
+
+	f.btnClose.ConnectMouseReleaseEvent(func(e *gui.QMouseEvent) {
+		f.Close()
+	})
 }

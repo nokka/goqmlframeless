@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
+	// Enable high dpi scaling, useful for devices with high pixel density displays.
+	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 
 	// needs to be called once before you can start using the QWidgets
 	app := widgets.NewQApplication(len(os.Args), os.Args)
@@ -23,6 +25,9 @@ func main() {
 	fw.Layout.AddWidget(qmlWidget, 0, 0)
 
 	qmlWidget.SetSource(core.NewQUrl3("qml/main.qml", 0))
+
+	// Make sure the window is allowed to minimize.
+	window.AllowMinimize(fw.WinId())
 
 	fw.Show()
 	app.Exec()
