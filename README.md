@@ -15,5 +15,5 @@ $ qtdeploy build
 $ qtdeploy -docker build windows_64_shared
 ```
 
-## Original author
+#### Original author
 This package is a modification and adaption of [akiyosi/goqtframelesswindow](https://github.com/akiyosi/goqtframelesswindow), full credit goes to him and his efforts. The reason this package was created was to simplify things and make it more minimalistic. While also using QML to render the application.
