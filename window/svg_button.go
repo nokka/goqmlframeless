@@ -33,12 +33,11 @@ func (b *SVGButton) Show() {
 
 // SetStyle ...
 func (b *SVGButton) SetStyle(color *RGB) {
-	var backgroundColor string
-	if color == nil {
-		backgroundColor = "background-color:none;"
-	} else {
-		hoverColor := color.Brend(b.f.frameColor, 0.75)
-		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", hoverColor.R, hoverColor.G, hoverColor.B, b.f.colorAlpha)
+	backgroundColor := "background-color:none;"
+	// Override background color if it's set.
+	if color != nil {
+		hoverColor := RGB{R: 0, B: 0, G: 0}
+		backgroundColor = fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", hoverColor.R, hoverColor.G, hoverColor.B, 1)
 	}
 
 	b.Widget.SetStyleSheet(fmt.Sprintf(`

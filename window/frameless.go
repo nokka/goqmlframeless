@@ -40,15 +40,8 @@ type QFramelessWindow struct {
 
 	// Mouse events.
 	titleBarMousePos  *core.QPoint
-	isTitleBarPressed bool
 	position          *core.QPoint
-
-	isCursorChanged     bool
-	isDragStart         bool
-	isLeftButtonPressed bool
-	dragPos             *core.QPoint
-
-	MousePos [2]int
+	isTitleBarPressed bool
 }
 
 // NewFramelessWindow ...
