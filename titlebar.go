@@ -86,11 +86,18 @@ func setupTitleBarEvents(f *QFramelessWindow) {
 			G: 162,
 			B: 232,
 		})
+
+		cursor := gui.NewQCursor()
+		cursor.SetShape(core.Qt__PointingHandCursor)
+		f.SetCursor(cursor)
 	})
 
 	f.iconMinimize.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
 		// Reset style when leaving the icon.
 		f.iconMinimize.SetStyle(nil)
+		cursor := gui.NewQCursor()
+		cursor.SetShape(core.Qt__ArrowCursor)
+		f.SetCursor(cursor)
 	})
 
 	f.iconMinimize.Widget.ConnectMousePressEvent(func(e *gui.QMouseEvent) {
@@ -115,11 +122,18 @@ func setupTitleBarEvents(f *QFramelessWindow) {
 			G: 162,
 			B: 232,
 		})
+
+		cursor := gui.NewQCursor()
+		cursor.SetShape(core.Qt__PointingHandCursor)
+		f.SetCursor(cursor)
 	})
 
 	f.iconClose.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
 		// Reset style when leaving the icon.
 		f.iconClose.SetStyle(nil)
+		cursor := gui.NewQCursor()
+		cursor.SetShape(core.Qt__ArrowCursor)
+		f.SetCursor(cursor)
 	})
 
 	f.iconClose.Widget.ConnectMousePressEvent(func(e *gui.QMouseEvent) {

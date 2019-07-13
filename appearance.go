@@ -13,16 +13,15 @@ func (f *QFramelessWindow) setupFrameColor() {
 	style := fmt.Sprintf("background-color: rgba(%d, %d, %d, %f);", f.frameColor.R, f.frameColor.G, f.frameColor.B, f.colorAlpha)
 	f.Widget.SetStyleSheet(" * { background-color: rgba(0, 0, 0, 0.0); color: rgba(0, 0, 0, 0); }")
 
-	borderSizeString := fmt.Sprintf("%d", f.borderSize*2) + "px"
-	roundSizeString := "5px"
+	roundSizeString := fmt.Sprintf("%d", f.borderRadius) + "px"
 
 	f.frame.SetStyleSheet(fmt.Sprintf(`
 	#QFramelessWidget {
-		border: 0px solid %s; 
-		padding-top: 2px; padding-right: %s; padding-bottom: %s; padding-left: %s;
-		border-radius: %s;
+		padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px;
+		border-top-left-radius: %s;
+    	border-top-right-radius: %s;
 		%s; 
-	}`, f.frameColor.Hex(), borderSizeString, borderSizeString, borderSizeString, roundSizeString, style))
+	}`, roundSizeString, roundSizeString, style))
 }
 
 // setupFrameShadow will setup the shadow for the frame.

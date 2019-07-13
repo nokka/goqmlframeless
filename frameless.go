@@ -14,7 +14,7 @@ type QFramelessWindow struct {
 
 	// Attributes.
 	shadowMargin int
-	borderSize   int
+	borderRadius int
 	colorAlpha   float64
 
 	// Frame.
@@ -42,12 +42,12 @@ type QFramelessWindow struct {
 
 // Options are the options available to customize the frame with.
 type Options struct {
-	Width      int
-	Height     int
-	Alpha      float64
-	Color      RGB
-	BorderSize int
-	ShadowSize int
+	Width        int
+	Height       int
+	Alpha        float64
+	Color        RGB
+	BorderRadius int
+	ShadowSize   int
 }
 
 // NewWindow creates a new frameless window.
@@ -59,7 +59,7 @@ func NewWindow(options Options) *QFramelessWindow {
 	f.frameColor = &options.Color
 	f.colorAlpha = options.Alpha
 	f.shadowMargin = options.ShadowSize
-	f.borderSize = options.BorderSize
+	f.borderRadius = options.BorderRadius
 
 	// Central widget and layout.
 	f.Widget = newWidget()
@@ -123,7 +123,7 @@ func (f *QFramelessWindow) createFrame() {
 
 	// // Title bar layout is added to the title bar, to add widgets on.
 	f.titleBarLayout = widgets.NewQHBoxLayout2(f.titleBar)
-	f.titleBarLayout.SetContentsMargins(0, 0, 0, 0)
+	f.titleBarLayout.SetContentsMargins(2, 2, 2, 2)
 
 	// Add the title bar to the frame.
 	f.frameLayout.AddWidget(f.titleBar, 0, 0)
