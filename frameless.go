@@ -15,6 +15,7 @@ type QFramelessWindow struct {
 	// Attributes.
 	shadowMargin int
 	borderRadius int
+	borderColor  *RGB
 	colorAlpha   float64
 
 	// Frame.
@@ -47,6 +48,7 @@ type Options struct {
 	Alpha        float64
 	Color        RGB
 	BorderRadius int
+	BorderColor  *RGB
 	ShadowSize   int
 }
 
@@ -60,6 +62,7 @@ func NewWindow(options Options) *QFramelessWindow {
 	f.colorAlpha = options.Alpha
 	f.shadowMargin = options.ShadowSize
 	f.borderRadius = options.BorderRadius
+	f.borderColor = options.BorderColor
 
 	// Central widget and layout.
 	f.Widget = newWidget()
