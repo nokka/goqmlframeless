@@ -49,13 +49,13 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 	minimizeColor = `
 		#BtnMinimize {
 			background-color: rgba(128, 128, 128, 0.3);
-			border-color: rgb(128, 128, 128, 0.2);
+			border-color: rgba(128, 128, 128, 0.2);
 		}
 	`
 	closeColor = `
 		#BtnClose {
 			background-color: rgba(128, 128, 128, 0.3);
-			border-color: rgb(128, 128, 128, 0.2);
+			border-color: rgba(128, 128, 128, 0.2);
 		}
 	`
 

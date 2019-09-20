@@ -23,7 +23,7 @@ func main() {
 		Alpha:       1.0,
 		Color:       goqmlframeless.RGB{R: 0, G: 0, B: 0},
 		BorderColor: &goqmlframeless.RGB{R: 198, G: 154, B: 31},
-		ShadowSize:  0,
+		ShadowSize:  0.0,
 	})
 
 	// QML Widget that will be used to draw on.
