@@ -4,7 +4,6 @@ package goqmlframeless
 
 import (
 	"fmt"
-	"runtime"
 
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
@@ -40,37 +39,11 @@ func addTitleBarButtons(f *QFramelessWindow) {
 
 // styleTitlebarButtons will style the OS specific buttons.
 func styleTitlebarButtons(f *QFramelessWindow) {
-	color := &RGB{R: 255, G: 255, B: 255}
-	var SvgMinimize, SvgClose string
+	svgMinimize := getMinimizeSVG(RGB{R: 255, G: 255, B: 255})
+	svgClose := getCloseSVG(RGB{R: 255, G: 255, B: 255})
 
-	if runtime.GOOS == "windows" {
-		SvgMinimize = fmt.Sprintf(`
-		<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-		<path fill="%s" d="M20,14H4V10H20" />
-		</svg>
-		`, color.Hex())
-
-		SvgClose = fmt.Sprintf(`
-		<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-		<path fill="%s" d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
-		</svg>
-		`, color.Hex())
-	} else {
-		SvgMinimize = fmt.Sprintf(`
-		<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-		<path fill="%s" d="M17,13H7V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-		</svg>
-		`, color.Hex())
-
-		SvgClose = fmt.Sprintf(`
-		<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-		<g transform="translate(0,1)">
-		<path fill="%s" d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/><path d="M0 0h24v24H0z" fill="none"/></g></svg>
-		`, "#e86032")
-	}
-
-	f.iconMinimize.IconBtn.Load2(core.NewQByteArray2(SvgMinimize, len(SvgMinimize)))
-	f.iconClose.IconBtn.Load2(core.NewQByteArray2(SvgClose, len(SvgClose)))
+	f.iconMinimize.IconBtn.Load2(core.NewQByteArray2(svgMinimize, len(svgMinimize)))
+	f.iconClose.IconBtn.Load2(core.NewQByteArray2(svgClose, len(svgClose)))
 
 	f.iconMinimize.Show()
 	f.iconClose.Show()
@@ -80,19 +53,21 @@ func styleTitlebarButtons(f *QFramelessWindow) {
 func setupTitleBarEvents(f *QFramelessWindow) {
 	// Setup minimize button actions.
 	f.iconMinimize.Widget.ConnectEnterEvent(func(event *core.QEvent) {
-		// Set style when hovering the icon.
-		f.iconMinimize.SetStyle(&RGB{
-			R: 0,
-			G: 162,
-			B: 232,
-		})
+		// Replace with hovered state svg.
+		minimizeHovered := getMinimizeSVG(RGB{R: 155, G: 155, B: 155})
+		f.iconMinimize.IconBtn.Load2(core.NewQByteArray2(minimizeHovered, len(minimizeHovered)))
 
+		// Change cursor.
 		cursor := gui.NewQCursor()
 		cursor.SetShape(core.Qt__PointingHandCursor)
 		f.SetCursor(cursor)
 	})
 
 	f.iconMinimize.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		// Replace with normal state svg.
+		svgMinimize := getMinimizeSVG(RGB{R: 255, G: 255, B: 255})
+		f.iconMinimize.IconBtn.Load2(core.NewQByteArray2(svgMinimize, len(svgMinimize)))
+
 		// Reset style when leaving the icon.
 		f.iconMinimize.SetStyle(nil)
 		cursor := gui.NewQCursor()
@@ -116,12 +91,9 @@ func setupTitleBarEvents(f *QFramelessWindow) {
 
 	// Setup close button actions.
 	f.iconClose.Widget.ConnectEnterEvent(func(event *core.QEvent) {
-		// Set style when hovering the icon.
-		f.iconClose.SetStyle(&RGB{
-			R: 0,
-			G: 162,
-			B: 232,
-		})
+		// Replace with hovered state svg.
+		closeHovered := getCloseSVG(RGB{R: 155, G: 155, B: 155})
+		f.iconClose.IconBtn.Load2(core.NewQByteArray2(closeHovered, len(closeHovered)))
 
 		cursor := gui.NewQCursor()
 		cursor.SetShape(core.Qt__PointingHandCursor)
@@ -129,6 +101,10 @@ func setupTitleBarEvents(f *QFramelessWindow) {
 	})
 
 	f.iconClose.Widget.ConnectLeaveEvent(func(event *core.QEvent) {
+		// Replace with normal state svg.
+		svgClose := getCloseSVG(RGB{R: 255, G: 255, B: 255})
+		f.iconClose.IconBtn.Load2(core.NewQByteArray2(svgClose, len(svgClose)))
+
 		// Reset style when leaving the icon.
 		f.iconClose.SetStyle(nil)
 		cursor := gui.NewQCursor()
@@ -169,4 +145,34 @@ func setupTitleBarEvents(f *QFramelessWindow) {
 		newPos := core.NewQPoint2(x, y)
 		f.Move(newPos)
 	})
+}
+
+func getMinimizeSVG(color RGB) string {
+	return fmt.Sprintf(`
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+	<g>
+	<title>background</title>
+	<rect fill="none" id="canvas_background" height="26" width="26" y="-1" x="-1"/>
+	</g>
+	<g>
+	<title>Layer 1</title>
+	<rect stroke="null" id="svg_3" height="3.352955" width="16.386974" y="20.712959" x="3.759288" stroke-opacity="null" fill="%s"/>
+	</g>
+	</svg>
+	`, color.Hex())
+}
+
+func getCloseSVG(color RGB) string {
+	return fmt.Sprintf(`
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+	<g>
+	<title>background</title>
+	<rect fill="none" id="canvas_background" height="26" width="26" y="-1" x="-1"/>
+	</g>
+	<g>
+	<title>Layer 1</title>
+	<path stroke="null" fill="%s" id="svg_1" d="m3.48053,9.684337l2.85088,-2.85088l5.701748,5.701748l5.701748,-5.701748l2.85088,2.85088l-5.701748,5.701748l5.701748,5.701748l-2.85088,2.85088l-5.701748,-5.701748l-5.701748,5.701748l-2.85088,-2.85088l5.70176,-5.701748l-5.70176,-5.701748z"/>
+	</g>
+	</svg>
+	`, color.Hex())
 }
