@@ -75,7 +75,6 @@ func NewWindow(options Options) *QFramelessWindow {
 	// Create the frame for the window.
 	f.createFrame()
 	f.setupFrameColor()
-	f.setupFrameShadow()
 
 	// Setup window flags and attributes.
 	f.setupWindowFlags()
